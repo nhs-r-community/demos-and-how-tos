@@ -1,0 +1,36 @@
+---
+title: "Penguins conditional formatting"
+author: "Chris Beeley"
+date: "27/03/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+
+library(palmerpenguins)
+library(tidyverse)
+library(kableExtra)
+
+penguin_df <- penguins %>% 
+  na.omit()
+
+penguin_table <- penguin_df %>% 
+  mutate(q_bill_length = ntile(bill_length_mm, 4)) %>% 
+  mutate(q_bill_length = recode(q_bill_length,
+    `1` = "green", `2` = "yellow", `3` = "orange", `4` = "red"
+  )) %>% 
+  select(species, island, bill_length_mm, q_bill_length) %>% 
+  sample_n(10)
+  
+penguin_table %>%
+  select(species, island, bill_length_mm) %>% 
+  kbl() %>%
+  kable_paper(bootstrap_options = "striped", full_width = F) %>% 
+  column_spec(3, background = penguin_table$q_bill_length)
+
+```
+
