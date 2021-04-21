@@ -1,0 +1,26 @@
+---
+title: "Loop variables"
+author: "Chris Beeley"
+date: "21/04/2021"
+output: html_document
+params:
+  variable: NA
+---
+
+```{r setup, include=FALSE}
+
+library(palmerpenguins)
+library(tidyverse)
+
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+## `r params$variable`
+
+```{r}
+
+penguins %>% 
+  ggplot(aes(x = .data[[params$variable]])) + geom_density()
+
+```

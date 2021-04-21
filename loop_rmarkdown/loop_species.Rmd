@@ -1,0 +1,27 @@
+---
+title: "Loop species"
+author: "Chris Beeley"
+date: "21/04/2021"
+output: html_document
+params:
+  species: NA
+---
+
+```{r setup, include=FALSE}
+
+library(palmerpenguins)
+library(tidyverse)
+
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+## `r params$species`
+
+```{r}
+
+penguins %>% 
+  filter(species == params$species) %>% 
+  ggplot(aes(x = bill_length_mm)) + geom_density()
+
+```
