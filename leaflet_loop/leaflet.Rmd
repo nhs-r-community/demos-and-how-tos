@@ -1,0 +1,56 @@
+---
+title: "Test maps"
+author: "Chris Beeley"
+date: "21/04/2021"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+
+library(leaflet)
+library(tidyverse)
+library(mapview)
+
+knitr::opts_chunk$set(echo = TRUE)
+
+# https://eric.clst.org/tech/usgeojson/
+
+nycounties <- rgdal::readOGR("json/gz_2010_us_050_00_500k.json")
+
+pal <- colorNumeric("viridis", NULL)
+
+# make some fake data to loop through
+
+nycounties@data$CENSUSAREA2 = 2 * nycounties@data$CENSUSAREA
+
+```
+
+```{r results="asis"}
+
+for(i in c("CENSUSAREA", "CENSUSAREA2")){
+  
+  cat(paste0("## ", i, "\\n \\n"))
+  
+  nycounties@data$variable = nycounties@data[[i]]
+
+  l <- leaflet(nycounties) %>%
+    setView(lng = -98.583, lat = 39.833, zoom = 4) %>%
+    addTiles() %>%
+    addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
+                fillColor = ~pal(log10(variable)),
+                label = ~paste0(LSAD, ": ", formatC(variable, big.mark = ","))) %>%
+    addLegend(pal = pal, values = ~log10(variable), opacity = 1.0,
+              labFormat = labelFormat(transform = function(x) round(10^x)))
+
+  mapshot(l, file = paste0(i, "_map_plot.png"))
+
+  cat(paste0("![](", "", i, "_map_plot.png)"), "  \n  \n")
+    
+  cat(paste0("You can even put some more text in here about ", i, ".  \n  \n"))
+  
+}
+
+```
+
