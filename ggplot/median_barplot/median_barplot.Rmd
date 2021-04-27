@@ -1,0 +1,47 @@
+---
+title: "Bar chart of medians"
+author: "Chris Beeley"
+date: "27/04/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+library(tidyverse)
+library(palmerpenguins)
+
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+## Data prep
+
+```{r}
+
+to_plot <- penguins %>%
+  group_by(species) %>%
+  summarise(median_bill_length = median(bill_length_mm, na.rm = TRUE))
+
+```
+
+## Unordered
+
+```{r}
+
+to_plot %>%
+  ggplot(aes(x = species, y = median_bill_length)) +
+  geom_col()
+
+```
+
+## Ordered
+
+```{r}
+
+to_plot %>%
+  mutate(species = fct_reorder(species, median_bill_length)) %>%
+  ggplot(aes(x = species, y = median_bill_length)) +
+  geom_col()
+
+```
+
