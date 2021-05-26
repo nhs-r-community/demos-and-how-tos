@@ -1,0 +1,1 @@
+Add a GitHub badge that users can click to take them to a GitHub page (in this case, the same repo that this application is in) to the upper right of a shinydashboard. Can use an image file instead of a hyperlink to an image but it's just more fiddling around writing filepaths :wink:
