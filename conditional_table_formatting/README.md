@@ -1,4 +1,1 @@
-
-This is an example to show how tables can be RAG rated using conditional formatting, based on quantiles in the data.
-
-(this code does not amount to an endorsement of RAG rating, and was produced to help somebody out :wink:)
+Conditionally formatting the cells of tables is quite a common thing that people want to do when they move from Excel to R. This folder contains (at the time of writing) two ways of doing so- one with kableExtra, and the other with gt. The kableExtra version uses discrete red/ amber/ green values, whereas the gt version gives a smooth colour gradient.
