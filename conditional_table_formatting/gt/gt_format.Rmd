@@ -1,0 +1,36 @@
+---
+title: "Conditionally formatting penguins with gt"
+author: "Chris Beeley"
+date: "31/05/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+library(palmerpenguins)
+library(tidyverse)
+library(gt)
+
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+```{r}
+
+# with thanks to this excellent blog post https://themockup.blog/posts/2020-09-04-10-table-rules-in-r/
+
+penguins %>% 
+  sample_n(30) %>% 
+  gt::gt() %>% 
+  gt::data_color(
+    columns = c(bill_length_mm, bill_depth_mm), 
+    colors = scales::col_numeric(
+      palette = paletteer::paletteer_d(
+        palette = "ggsci::default_gsea"
+      ) %>% as.character(),
+      domain = NULL
+    )
+  )
+
+```
+
