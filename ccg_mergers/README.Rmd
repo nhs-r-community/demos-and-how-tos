@@ -232,6 +232,16 @@ g |>
          current_ccg = map_chr(name, find_current_ccg, graph = .G()))
 ```
 
+## Getting a tibble of the mergers
+
+It just remains to see how we can get out a tibble of the mergers. We can take advantage of `{tidygraph}` by activating the vertices and running `as_tibble()` to get the data as a tibble that we can easily work with.
+
+```{r get the mergers as a tibble}
+g |>
+  activate(nodes) |>
+  as_tibble()
+```
+
 ## Session Info
 
 ```{r session info}
