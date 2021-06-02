@@ -2,16 +2,18 @@
 title: "ccg mergers"
 author: "[Tom Jemmett][tj_email] | The Strategy Unit [su_web]"
 date: "02/06/2021"
-output: html_document
+output: github_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE,
+                      dpi = 300,
+                      dev.args = list(type = "cairo"))
+
 options(tidyverse.quiet = TRUE)
 library(tidyverse)
 library(igraph)
 library(ggraph)
-library(plotly)
 library(zeallot)
 library(lubridate)
 library(tidygraph)
@@ -144,7 +146,7 @@ find_current_ccg <- function(v, graph) {
 
 Now we can update our graph to add in these new columns.
 
-```{r}
+```{r add columns to vertices}
 g <- g |>
   activate(nodes) |>
   mutate(active_from = map_dbl(name, find_active_from_date, .G()) |> as_date(),
@@ -155,7 +157,7 @@ g
 
 We can confirm that this works for the edge case that we looked at above
 
-```{r}
+```{r check our graph works}
 g |>
   activate(nodes) |>
   filter(current_ccg == "D4U1Y") |>
@@ -166,63 +168,24 @@ g |>
 
 We can now visualise all of the CCG's and the mergers. The `{ggraph}` package works well if you want to use `ggplot`, but I would prefer to be able to have a more interactive graph. We can use `{plotly}`, but there isn't a neat way of getting plots of graphs, you have to handle all of the edge shapes yourself.
 
-```{r}
-vertices_df <- bind_cols(
-  g |>
-    layout_nicely() |>
-    as_tibble() |>
-    rename(x = V1, y = V2),
-  vertex.attributes(g)
-)
-
-edges_df <- g |>
-  get.edgelist() |>
-  as_tibble() |>
-  rename(from = V1, to = V2)
-
-p <- plot_ly(
-  vertices_df,
-  x = ~x,
-  y = ~y,
-  color = ~format(active_from, "%b-%y"),
-  type = "scatter",
-  mode = "markers",
-  text = ~ccg_description,
-  hoverinfo = "text"
-)
-
-edge_shapes <- pmap(edges_df, \(from, to) {
-  c(x0, y0) %<-% filter(vertices_df, name == from)[,c("x", "y")]
-  c(x1, y1) %<-% filter(vertices_df, name == to  )[,c("x", "y")]
-  list(
-    type = "line",
-    line = list(color = "#030303", width = 0.3),
-    layer = "below",
-    x0 = x0,
-    y0 = y0,
-    x1 = x1,
-    y1 = y1
-  )
-})
-
-axis <- list(title = "", showgrid = FALSE, showticklabels = FALSE, zeroline = FALSE)
-
-fig <- layout(
-  p,
-  title = "CCG Mergers",
-  shapes = edge_shapes,
-  xaxis = axis,
-  yaxis = axis
-)
-
-fig
+```{r visualise graph, fig.height = 6}
+ggraph(g, layout = "nicely") +
+  geom_edge_link(arrow = arrow(length = unit(1, "mm")),
+                 end_cap = circle(2, "mm")) +
+  geom_node_point(aes(colour = format(active_from, "%b-%y"))) +
+  scale_colour_brewer(type = "div", palette = "Dark2") +
+  labs(colour = "") +
+  theme(panel.background = element_blank(),
+        legend.title = element_blank(),
+        legend.key = element_blank(),
+        legend.position = "bottom")
 ```
 
 ## Getting previous mappings
 
 We may not want to map to the 2021 CCG's though, it may be that we want to create a mapping from previous years to the 2019 CCG's. This is really simple with `{tidygraph}`, we can simply activate the edges, filter the results to only include edges that were effective on or before that date, then do the same with the vertices. We just need to recreate the `active_to` and `current_ccg` columns, as these need to reflect the 2019 data.
 
-```{r }
+```{r get previous mappings}
 g |>
   activate(edges) |>
   filter(effective_date <= ymd(20190401)) |>
