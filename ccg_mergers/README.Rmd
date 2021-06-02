@@ -1,0 +1,247 @@
+---
+title: "ccg mergers"
+author: "[Tom Jemmett][tj_email] | The Strategy Unit [su_web]"
+date: "02/06/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(tidyverse.quiet = TRUE)
+library(tidyverse)
+library(igraph)
+library(ggraph)
+library(plotly)
+library(zeallot)
+library(lubridate)
+library(tidygraph)
+```
+
+When the [CCG][ccgs]'s were first introduced in April 2013 there were 211 CCG's. But since then a series of mergers have reduced the number to [106][ccg21] (as of April 2021).
+
+This document shows how we can easily find the list of successors to CCG's. We will use the `{NHSRtools}` package, which is currently only available on github. You can install it by running:
+
+```{r install NHSRtools package, eval = FALSE}
+devtools::install_github("NHS-R-Community/NHSRtools")
+```
+
+## Getting the data
+
+First, let's get a list of all of the CCG's that have ever existed from the [ODS API][ods_api]. The API returns not only the CCG's but also commisioning hubs, so we simply filter the list to only include rows where the name starts with "NHS" and ends in "CCG".
+
+```{r get ccgs}
+ccgs <- NHSRtools::ods_get_ccgs() |>
+  select(name, org_id, last_change_date, status) |>
+  filter(str_detect(name, "^NHS .* CCG$"))
+
+ccgs
+```
+
+This returns `nrow(ccgs)` rows - more than the original 211. This includes all of the active and inactive CCG's.
+
+Next we download the [successors files][ods_downloads]. This file is for all organisation types and includes the previous organisation, the new organisation, and the date when the change occured. We perform a semi-join to the list of CCG's in order to filter the list to exclude other organisation types.
+
+```{r get successors}
+ccg_successors <- NHSRtools::ods_get_successors() |>
+  semi_join(ccgs, by = c("old_code" = "org_id")) |>
+  select(old_code, new_code, effective_date)
+
+ccg_successors
+```
+
+### Checking the successors data
+
+One thing we should check is have there been any cases where one CCG has split into two? We can achieve this with `{dplyr}` by grouping on the `old_code` column and seeing if there are any groups with more than 1 row (`n() > 1`).
+
+```{r successors check for splits}
+ccg_successors |>
+  group_by(old_code) |>
+  filter(n() > 1)
+```
+
+Fortunately there have been none of these cases - this makes life a lot easier if we want to reassign old CCG's to newer ones as we can simply join and update.
+
+However, one more question we should ask is have there been any cases where CCG A merged into CCG B, and CCG B merged into CCG C?
+
+If there were not, we could run something simple like:
+
+```{r updating ccgs simply, eval = FALSE}
+ccgs |>
+  rename(old_code = org_id) |>
+  mutate(new_code = old_code, .after = old_code) |>
+  rows_update(ccg_successors |> select(old_code, new_code), by = "old_code")
+```
+
+We can test to see if there are any of the problematic mergers by simply joining the `ccg_successors` table to itself, like so:
+
+```{r successors check for later merges}
+inner_join(
+  ccg_successors,
+  ccg_successors,
+  by = c("new_code" = "old_code")
+)
+```
+
+There has been a case where this has happened, so simply joining to our dataset will not work - consider we are looking at 2016 data and we have a row for CCG "10G". We join to `ccg_successors` and we get the code "15D". But "15D" became "D3U1Y" in 2021, so we would need to repeat this process again to get the correct result. Something like
+
+
+```{r updating ccgs with 2nd order merge simply, eval = FALSE}
+ccgs |>
+  rename(old_code = org_id) |>
+  mutate(new_code = old_code, .after = old_code) |>
+  rows_update(ccg_successors |> select(old_code, new_code), by = "old_code") |>
+  rows_update(inner_join(
+    ccg_successors,
+    ccg_successors,
+    by = c("new_code" = "old_code")
+  ) |> select(old_code, new_code = new_code.y), by = "old_code")
+```
+
+This is pretty messy, and what happens if next year D4U1Y mergers with another CCG? This is a problem that would be best solved with a [graph][graph].
+
+## Creating CCG graph
+
+We will use two packages for creating and working with our graph - `{igraph}` and `{tidygraph}`.
+
+```{r create graph}
+g <- graph_from_data_frame(
+  ccg_successors,
+  vertices = select(ccgs, org_id, ccg_description = name, status)
+) |>
+  as_tbl_graph() |>
+  activate(edges) |>
+  # when using tidygraph the date column is converted to a number, convert back to a date
+  mutate(across(effective_date, as_date))
+```
+
+`{tidygraph}` makes it much easier to work with graphs, using a very similar syntax to `{dplyr}`. The big difference is there are two dataframes we are working with - one for the edges and one for the vertices.
+
+We can add extra columns to our vertices - we want to add in the date that the CCG was "active" from and when it was "active" to. We can get this from the edges that are "incident" to the vertex. To find the "active to" date we look at the edge that is coming out of the vertex, and default to `NA`. For the "active from" date we look at the edges that are coming in to the vertex and select the first item only, using April 2013 as the default.
+
+```{r find active to/from date functions}
+find_active_to_date <- function(vertex, graph) {
+  c(incident_edges(graph, vertex, "out")[[1]]$effective_date %m-% days(1), as_date(NA))[[1]]
+}
+
+find_active_from_date <- function(vertex, graph) {
+  c(incident_edges(graph, vertex, "in")[[1]]$effective_date, ymd(20130401))[[1]]
+}
+```
+
+We can also add a column to find the current CCG to use. We recursively search vertices to find neighbours by following "out" edges. If we have no neighbours at any vertex we simply return that vertex as the current CCG.
+
+```{r find current ccg function}
+# repeatadly search the neighbours of a vertex to find the current ccg - each vertex only has one "out" edge, so we
+# don't have to worry about selecting one of the neighbours
+find_current_ccg <- function(v, graph) {
+  n <- neighbors(graph, v)$name
+  # if we find no neighbours then we simply return the vertex that we are at
+  if (length(n) == 0) return(v)
+  # recurisvely call this function to find the current ccg
+  find_current_ccg(n, graph) 
+}
+```
+
+Now we can update our graph to add in these new columns.
+
+```{r}
+g <- g |>
+  activate(nodes) |>
+  mutate(active_from = map_dbl(name, find_active_from_date, .G()) |> as_date(),
+         active_to = map_dbl(name, find_active_to_date, .G()) |> as_date(),
+         current_ccg = map_chr(name, find_current_ccg, graph = .G()))
+g
+```
+
+We can confirm that this works for the edge case that we looked at above
+
+```{r}
+g |>
+  activate(nodes) |>
+  filter(current_ccg == "D4U1Y") |>
+  arrange(active_from, ccg_description)
+```
+
+## Visualising the graph
+
+We can now visualise all of the CCG's and the mergers. The `{ggraph}` package works well if you want to use `ggplot`, but I would prefer to be able to have a more interactive graph. We can use `{plotly}`, but there isn't a neat way of getting plots of graphs, you have to handle all of the edge shapes yourself.
+
+```{r}
+vertices_df <- bind_cols(
+  g |>
+    layout_nicely() |>
+    as_tibble() |>
+    rename(x = V1, y = V2),
+  vertex.attributes(g)
+)
+
+edges_df <- g |>
+  get.edgelist() |>
+  as_tibble() |>
+  rename(from = V1, to = V2)
+
+p <- plot_ly(
+  vertices_df,
+  x = ~x,
+  y = ~y,
+  color = ~format(active_from, "%b-%y"),
+  type = "scatter",
+  mode = "markers",
+  text = ~ccg_description,
+  hoverinfo = "text"
+)
+
+edge_shapes <- pmap(edges_df, \(from, to) {
+  c(x0, y0) %<-% filter(vertices_df, name == from)[,c("x", "y")]
+  c(x1, y1) %<-% filter(vertices_df, name == to  )[,c("x", "y")]
+  list(
+    type = "line",
+    line = list(color = "#030303", width = 0.3),
+    layer = "below",
+    x0 = x0,
+    y0 = y0,
+    x1 = x1,
+    y1 = y1
+  )
+})
+
+axis <- list(title = "", showgrid = FALSE, showticklabels = FALSE, zeroline = FALSE)
+
+fig <- layout(
+  p,
+  title = "CCG Mergers",
+  shapes = edge_shapes,
+  xaxis = axis,
+  yaxis = axis
+)
+
+fig
+```
+
+## Getting previous mappings
+
+We may not want to map to the 2021 CCG's though, it may be that we want to create a mapping from previous years to the 2019 CCG's. This is really simple with `{tidygraph}`, we can simply activate the edges, filter the results to only include edges that were effective on or before that date, then do the same with the vertices. We just need to recreate the `active_to` and `current_ccg` columns, as these need to reflect the 2019 data.
+
+```{r }
+g |>
+  activate(edges) |>
+  filter(effective_date <= ymd(20190401)) |>
+  activate(nodes) |>
+  filter(active_from <= ymd(20190401)) |>
+  mutate(active_to = map_dbl(name, find_active_to_date, .G()) |> as_date(),
+         current_ccg = map_chr(name, find_current_ccg, graph = .G()))
+```
+
+## Session Info
+
+```{r session info}
+devtools::session_info()
+```
+
+[tj_email]: mailto:thomas.jemmett@nhs.net
+[su_web]: https://www.strategyunitwm.nhs.uk/
+[ccgs]: https://www.england.nhs.uk/commissioning/who-commissions-nhs-services/ccgs/
+[ccg21]: https://geoportal.statistics.gov.uk/datasets/48fc517976fd495c80a2fbde97b103e6_0/explore
+[ods_api]: https://digital.nhs.uk/services/organisation-data-service/guidance-for-developers/search-endpoint
+[ods_downloads]: https://digital.nhs.uk/services/organisation-data-service/data-downloads/miscellaneous
+[graph]: https://en.wikipedia.org/wiki/Graph_(abstract_data_type)
