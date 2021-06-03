@@ -1,6 +1,6 @@
 ---
 title: "ccg mergers"
-author: "[Tom Jemmett][tj_email] | The Strategy Unit [su_web]"
+author: "[Tom Jemmett][tj_email] | [The Strategy Unit][su_web]"
 date: "02/06/2021"
 output: github_document
 ---
