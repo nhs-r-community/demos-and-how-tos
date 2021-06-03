@@ -1,7 +1,6 @@
 ccg mergers
 ================
-[Tom Jemmett](mailto:thomas.jemmett@nhs.net) \| The Strategy Unit
-[su\_web](https://www.strategyunitwm.nhs.uk/)
+[Tom Jemmett](mailto:thomas.jemmett@nhs.net) \| [The Strategy Unit](https://www.strategyunitwm.nhs.uk/)
 02/06/2021
 
 When the
