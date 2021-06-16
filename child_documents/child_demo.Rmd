@@ -1,0 +1,57 @@
+---
+title: "Child demo"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+library(palmerpenguins)
+library(tidyverse)
+
+knitr::opts_chunk$set(echo = TRUE, results = "asis")
+
+```
+
+## All penguin species {.tabset}
+
+### Adelie
+
+```{r}
+
+filter_species <- "Adelie"
+
+res <- knitr::knit_child(
+  'child.Rmd', envir = environment(), quiet = TRUE
+)
+
+cat(unlist(res), sep = '\n')
+
+```
+
+### Chinstrap
+
+```{r}
+
+filter_species <- "Chinstrap"
+
+res <- knitr::knit_child(
+  'child.Rmd', envir = environment(), quiet = TRUE
+)
+
+cat(unlist(res), sep = '\n')
+
+```
+
+### Gentoo
+
+```{r}
+
+filter_species <- "Gentoo"
+
+res <- knitr::knit_child(
+  'child.Rmd', envir = environment(), quiet = TRUE
+)
+
+cat(unlist(res), sep = '\n')
+
+```

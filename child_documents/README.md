@@ -1,0 +1,1 @@
+This is an example of using child documents to make a big document that is composed of several parts, each of which can be run with parameters. This example uses tabs but you could equally just make a really long document of course

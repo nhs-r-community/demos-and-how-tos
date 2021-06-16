@@ -1,0 +1,25 @@
+---
+title: "Child document"
+author: "Chris Beeley"
+date: "16/06/2021"
+output: html_document
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### Text
+
+There are `r penguins %>% filter(species == filter_species) %>% nrow()` penguins in this dataset.
+
+#### Graph
+
+```{r}
+
+penguins %>% 
+  filter(species == filter_species) %>% 
+  ggplot(aes(x = bill_length_mm, y = bill_depth_mm)) +
+  geom_point()
+
+```
