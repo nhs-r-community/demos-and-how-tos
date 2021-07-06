@@ -1,0 +1,1 @@
+This section is for useful functions that are too small to need their own code file. Over time if it expands (with help from pull requests :smile:) it will be worth splitting the code files into separate pieces.
