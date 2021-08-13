@@ -43,7 +43,7 @@ method_rio <-  import_list(files,
                            sheet = "Manchester") # will read the first sheet by default
 
 
-<<<<<<< HEAD
+
 
 
 #read in and combine all worksheets from one file
@@ -61,5 +61,3 @@ all_sheets_df <- map_dfr(all_sheets,
                     ~ read_excel(path, sheet = .x),
                     .id = "sheet")
 
-=======
->>>>>>> adc0e268a05cc2c05fe3744e6f62d41249f4610e
