@@ -18,14 +18,10 @@ app_ui <- function(request) {
         width = 300,
         sidebarMenu(
           
-          # menuItem("Summary", 
-          #          tabName = "overview",
-          #          icon = shiny::icon("dashboard")
-          #          # , badgeLabel = "planned", badgeColor = "orange"
-          # ),
-          
           menuItem("Upload data", 
                    tabName = "upload-data"),
+          menuItem("Per class",
+                   tabName = "per_class")
           
         )
       ),
@@ -34,7 +30,9 @@ app_ui <- function(request) {
         tabItems(
           tabItem(tabName = "upload-data",
                   mod_upload_data_ui("upload_data_ui_1")
-          )
+          ),
+          tabItem(tabName = "per_class",
+                  mod_per_class_ui("per_class_ui_1"))
         )
       )
     )

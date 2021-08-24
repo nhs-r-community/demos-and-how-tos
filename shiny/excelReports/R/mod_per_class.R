@@ -17,15 +17,9 @@ mod_per_class_ui <- function(id){
 #' per_class Server Functions
 #'
 #' @noRd 
-mod_per_class_server <- function(id){
+mod_per_class_server <- function(id, all_data){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
  
   })
 }
-    
-## To be copied in the UI
-# mod_per_class_ui("per_class_ui_1")
-    
-## To be copied in the server
-# mod_per_class_server("per_class_ui_1")

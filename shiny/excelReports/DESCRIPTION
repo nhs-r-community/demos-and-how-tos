@@ -9,6 +9,7 @@ License: MIT + file LICENSE
 Imports: 
     attempt,
     config (>= 0.3.1),
+    datamods,
     DT,
     ggplot2,
     glue,

@@ -19,6 +19,7 @@ stop() # in case I run all by accident
 ## Add one line by package you want to add as dependency
 usethis::use_package( "ggplot2" )
 usethis::use_package( "readxl" )
+usethis::use_package( "datamods" )
 
 ## Add modules ----
 ## Create a module infrastructure in R/

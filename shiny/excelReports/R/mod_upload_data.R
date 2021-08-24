@@ -21,6 +21,20 @@ mod_upload_data_ui <- function(id){
 mod_upload_data_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
+    
+    observeEvent(input$launch_modal, {
+      datamods::import_modal(
+        id = session$ns("myid"),
+        from = "file",
+        title = "Import data to be used in application"
+      )
+    })
+    
+    imported <- datamods::import_server("myid", return_class = "tbl_df")
+    
+    reactive(
+      imported$data()
+    )
  
   })
 }
