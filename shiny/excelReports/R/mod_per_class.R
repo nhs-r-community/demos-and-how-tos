@@ -48,12 +48,16 @@ mod_per_class_server <- function(id, all_data){
         n_subjects <- length(unique(levels(df$subject)))
         n_pupils <- length(unique((df$adm_no)))
         
+        # delete previous run
+        
+        unlink("class_plots/*pdf")
+        
         files <- NULL
         
-        for (i in 1 : n_pupils) {
+        for (i in 1 : 2 n_pupils) {
           xdf <- df[df$adm_no == admission_numbers[i], ]
           for(j in 1:n_subjects) {
-            my_file_name <- # unique(
+            my_file_name <- 
               paste0(xdf$name_short[xdf$adm_no==admission_numbers[i]], "_AdmNo_", 	
                      xdf$adm_no[xdf$adm_no==admission_numbers[i]], 
                      "_Class_", xdf$class[xdf$adm_no==admission_numbers[i]], ".pdf")
@@ -78,7 +82,7 @@ mod_per_class_server <- function(id, all_data){
             dev.off()
           }
         }
-        zip(file, files)
+        zip(file, file.path("class_plots", files))
       }
     )
     
