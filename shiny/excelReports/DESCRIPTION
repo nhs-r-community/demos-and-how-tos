@@ -15,7 +15,9 @@ Imports:
     glue,
     golem (>= 0.3.1),
     htmltools,
-    shiny (>= 1.6.0)
+    pkgload,
+    shiny (>= 1.6.0),
+    shinydashboard
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1

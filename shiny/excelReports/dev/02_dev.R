@@ -20,10 +20,12 @@ stop() # in case I run all by accident
 usethis::use_package( "ggplot2" )
 usethis::use_package( "readxl" )
 usethis::use_package( "datamods" )
+usethis::use_package( "shinydashboard" )
 
 ## Add modules ----
 ## Create a module infrastructure in R/
 golem::add_module( name = "upload_data" ) # Name of the module
+golem::add_module( name = "per_class" ) # Name of the module
 golem::add_module( name = "per_class" ) # Name of the module
 
 ## Add helper functions ----

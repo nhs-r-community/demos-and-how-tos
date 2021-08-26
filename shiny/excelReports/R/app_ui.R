@@ -12,16 +12,15 @@ app_ui <- function(request) {
     # Your application UI logic 
     dashboardPage(
       
-      dashboardHeader(title = "Patient experience",
-                      titleWidth = 300),
+      dashboardHeader(title = "Excel reports"),
       dashboardSidebar(
         width = 300,
         sidebarMenu(
           
           menuItem("Upload data", 
                    tabName = "upload-data"),
-          menuItem("Per class",
-                   tabName = "per_class")
+          menuItem("Download graphs",
+                   tabName = "download_graphs")
           
         )
       ),
@@ -31,8 +30,13 @@ app_ui <- function(request) {
           tabItem(tabName = "upload-data",
                   mod_upload_data_ui("upload_data_ui_1")
           ),
-          tabItem(tabName = "per_class",
-                  mod_per_class_ui("per_class_ui_1"))
+          tabItem(tabName = "download_graphs",
+                  h3("Per class"),
+                  mod_per_class_ui("per_class_ui_1"),
+                  
+                  h3("Per student"),
+                  
+          )
         )
       )
     )

@@ -13,18 +13,18 @@ mod_upload_data_ui <- function(id){
     
     fluidPage(
       
-    actionButton(ns("launch_modal"), "Upload new data"),
-    
-    hr(),
-    
-    h3("Data preview")
-    
-    DT::DTOutput(ns("data_preview"))
+      actionButton(ns("launch_modal"), "Upload new data"),
+      
+      hr(),
+      
+      h3("Data preview"),
+      
+      DT::DTOutput(ns("data_preview"))
     )
     
   )
 }
-    
+
 #' upload_data Server Functions
 #'
 #' @noRd 
@@ -50,6 +50,6 @@ mod_upload_data_server <- function(id){
     reactive(
       imported$data()
     )
- 
+    
   })
 }
