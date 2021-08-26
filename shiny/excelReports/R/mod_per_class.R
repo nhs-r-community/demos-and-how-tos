@@ -13,6 +13,8 @@ mod_per_class_ui <- function(id){
     
     fluidPage(
       
+      uiOutput(ns("which_classUI")),
+
       downloadButton(ns("download_graphs")),
     )
   )
@@ -25,12 +27,20 @@ mod_per_class_server <- function(id, all_data){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
+    output$which_classUI <- renderUI({
+      
+      choices <- unique(all_data()$class)
+      
+      selectInput(ns("which_class"), "Select class", 
+                  choices = choices)
+    })
+    
     output$download_graphs <- downloadHandler(
       
       filename = "graphs.zip",
       content = function(file) {
         
-        WhichClass	<- "7"
+        WhichClass	<- input$which_class
         
         df <- all_data()
         
@@ -54,7 +64,7 @@ mod_per_class_server <- function(id, all_data){
         
         files <- NULL
         
-        for (i in 1 : 2 n_pupils) {
+        for (i in 1 : 2){ # n_pupils) {
           xdf <- df[df$adm_no == admission_numbers[i], ]
           for(j in 1:n_subjects) {
             my_file_name <- 

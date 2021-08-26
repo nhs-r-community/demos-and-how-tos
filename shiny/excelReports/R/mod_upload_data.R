@@ -11,7 +11,17 @@ mod_upload_data_ui <- function(id){
   ns <- NS(id)
   tagList(
     
-    actionButton(ns("launch_modal"), "Upload new data")
+    fluidPage(
+      
+    actionButton(ns("launch_modal"), "Upload new data"),
+    
+    hr(),
+    
+    h3("Data preview")
+    
+    DT::DTOutput(ns("data_preview"))
+    )
+    
   )
 }
     
@@ -31,6 +41,11 @@ mod_upload_data_server <- function(id){
     })
     
     imported <- datamods::import_server("myid", return_class = "tbl_df")
+    
+    output$data_preview <- DT::renderDT({
+      
+      imported$data()
+    })
     
     reactive(
       imported$data()
