@@ -58,13 +58,11 @@ mod_per_class_server <- function(id, all_data){
         n_subjects <- length(unique(levels(df$subject)))
         n_pupils <- length(unique((df$adm_no)))
         
-        # delete previous run
-        
-        unlink("class_plots/*pdf")
-        
         files <- NULL
         
-        for (i in 1 : 2){ # n_pupils) {
+        myDir = tempdir()
+        
+        for (i in 1 : n_pupils) {
           xdf <- df[df$adm_no == admission_numbers[i], ]
           for(j in 1:n_subjects) {
             my_file_name <- 
@@ -72,7 +70,7 @@ mod_per_class_server <- function(id, all_data){
                      xdf$adm_no[xdf$adm_no==admission_numbers[i]], 
                      "_Class_", xdf$class[xdf$adm_no==admission_numbers[i]], ".pdf")
             
-            pdf(file.path("class_plots", my_file_name), width = 15, height = 10)
+            pdf(file.path(myDir, my_file_name), width = 15, height = 10)
             
             p1 <- ggplot2::ggplot(xdf, 
                                   ggplot2::aes(x = test_occ_no_f, 
@@ -92,7 +90,7 @@ mod_per_class_server <- function(id, all_data){
             dev.off()
           }
         }
-        zip(file, file.path("class_plots", files))
+        zip(file, file.path(myDir, files), flags = "-j")
       }
     )
     

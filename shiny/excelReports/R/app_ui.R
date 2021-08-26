@@ -35,7 +35,7 @@ app_ui <- function(request) {
                   mod_per_class_ui("per_class_ui_1"),
                   
                   h3("Per student"),
-                  
+                  mod_per_student_ui("per_student_ui_1")
           )
         )
       )

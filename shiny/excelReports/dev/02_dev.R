@@ -26,7 +26,7 @@ usethis::use_package( "shinydashboard" )
 ## Create a module infrastructure in R/
 golem::add_module( name = "upload_data" ) # Name of the module
 golem::add_module( name = "per_class" ) # Name of the module
-golem::add_module( name = "per_class" ) # Name of the module
+golem::add_module( name = "per_student" ) # Name of the module
 
 ## Add helper functions ----
 ## Creates fct_* and utils_*
