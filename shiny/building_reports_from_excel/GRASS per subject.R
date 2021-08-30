@@ -11,15 +11,6 @@ WhichSubject	<- "biology"		# as per TestScoresDBSep2018.xlsx file
 # Do not alter anything below this line       #
 ###############################################
 
-setwd(paste(grass_directory, "GRASS Data", sep="/"))
-
-
-library(tidyverse)
-library(readxl)
-library(gridExtra)
-
-
-df <- read_excel("TestScoresDB.xlsx", sheet=1)
 df$marks_perc <- df$marks/df$max_marks*100
 
 df$subject <- factor(tolower(df$subject))
