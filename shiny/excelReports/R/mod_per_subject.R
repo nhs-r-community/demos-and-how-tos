@@ -52,13 +52,12 @@ mod_per_subject_server <- function(id, all_data){
         
         df$subject <- factor(tolower(df$subject))
         df$test_desc <- factor(tolower(df$test_desc))
-        df$name_short <- factor(df$name_short)
         df$test_occ_no_f <- factor(paste("Occ", df$test_occ, sep=":"))
         
         
         if(input$all_graphs) {
           
-          subjects <- sort(unique(all_data()$subject))
+          subjects <- sort(unique(df$subject))
           
         } else {
           

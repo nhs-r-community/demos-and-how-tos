@@ -11,7 +11,7 @@ WhichSubject	<- "biology"		# as per TestScoresDBSep2018.xlsx file
 # Do not alter anything below this line       #
 ###############################################
 
-df$marks_perc <- df$marks/df$max_marks*100
+df$marks_perc <- df$marks / df$max_marks * 100
 
 df$subject <- factor(tolower(df$subject))
 df$test_desc <- factor(tolower(df$test_desc))
