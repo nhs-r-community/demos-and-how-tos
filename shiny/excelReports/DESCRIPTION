@@ -15,6 +15,7 @@ Imports:
     glue,
     golem (>= 0.3.1),
     htmltools,
+    magrittr,
     pkgload,
     shiny (>= 1.6.0),
     shinydashboard

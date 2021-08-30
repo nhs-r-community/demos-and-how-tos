@@ -37,7 +37,7 @@ mod_per_student_server <- function(id, all_data){
       
       choices = unique(all_data()$adm_no)
       
-      selectInput("which_student", "Select student",
+      selectInput(session$ns("which_student"), "Select student",
                   choices = choices)
     })
     
@@ -58,38 +58,42 @@ mod_per_student_server <- function(id, all_data){
         
         if(input$all_graphs) {
           
-          n <- length(unique(all_data()$adm_no))
           admission_numbers <- sort(unique(all_data()$adm_no))
           
         } else {
-
-          n <- 1
+          
           admission_numbers <- input$which_student
         }
         
-        ###
         files <- NULL
         
-        myDir = tempdir()
+        myDir <- tempdir()
         
-        for(i in 1:n) {
-          my_file_name <- paste(df$name_short[df$adm_no == admission_numbers[i]], 
-                                "AdmNo", df$adm_no[df$adm_no == admission_numbers[i]], 
-                                "Class", df$class[df$adm_no == admission_numbers[i]],
-                                sep = "-")
+        for(i in admission_numbers) {
+          my_file_name <- paste(df$name_short[df$adm_no == i], 
+                                "_AdmNo_", df$adm_no[df$adm_no == i], 
+                                "_Class_", df$class[df$adm_no == i],
+                                ".pdf")
           adf <- df %>% 
-            dplyr::filter (adm_no==admission_numbers[i])
-          pdf (paste(my_file_name, "pdf", sep='.'), width=15, height=10)
-          p1 <- ggplot(df[df$class==unique(adf$class),], aes(x=test_occ_no_f, y=marks_perc)) +
-            geom_boxplot()+
-            geom_point(data=adf, 
-                       aes(x=test_occ_no_f, y=marks_perc,group=test_desc), 
-                       col='red')+	
-            facet_wrap(subject~test_desc)+
-            ylab("% Score")+
-            xlab("Test Occ")+
-            scale_y_continuous(breaks = seq(0, 100, 10), limits=c(0,100))+
-            ggtitle(my_file_name)
+            dplyr::filter(adm_no == i)
+          
+          pdf(file.path(myDir, my_file_name), width = 15, height = 10)
+
+          p1 <- ggplot2::ggplot(df[df$class == unique(adf$class),], 
+                                ggplot2::aes(x = test_occ_no_f, y = marks_perc)) +
+            ggplot2::geom_boxplot() +
+            ggplot2::geom_point(data = adf, 
+                                ggplot2::aes(x = test_occ_no_f, 
+                                             y = marks_perc,
+                                             group = test_desc), 
+                                col = 'red') +	
+            ggplot2::facet_wrap(subject ~ test_desc) +
+            ggplot2::ylab("% Score") +
+            ggplot2::xlab("Test Occ") +
+            ggplot2::scale_y_continuous(breaks = seq(0, 100, 10), 
+                                        limits = c(0, 100)) +
+            ggplot2::ggtitle(my_file_name)
+          
           print(p1)
           
           files <- c(my_file_name, files)

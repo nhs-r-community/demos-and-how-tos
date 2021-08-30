@@ -93,6 +93,5 @@ mod_per_class_server <- function(id, all_data){
         zip(file, file.path(myDir, files), flags = "-j")
       }
     )
-    
   })
 }
