@@ -38,7 +38,10 @@ app_ui <- function(request) {
                   mod_per_student_ui("per_student_ui_1"),
                   
                   h3("Per subject"),
-                  mod_per_subject_ui("per_subject_ui_1")
+                  mod_per_subject_ui("per_subject_ui_1"),
+                  
+                  h3("Per test"),
+                  mod_per_test_ui("per_test_ui_1")
           )
         )
       )
