@@ -1,0 +1,65 @@
+---
+title: "Loop graphs in RMarkdown"
+author: "Chris Beeley"
+date: "02/09/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+library(palmerpenguins)
+library(tidyverse)
+
+knitr::opts_chunk$set(echo = TRUE)
+
+# make several datasets
+
+penguins_1 <- penguins %>% 
+  sample_n(50)
+
+penguins_2 <- penguins %>% 
+  sample_n(50)
+
+penguins_3 <- penguins %>% 
+  sample_n(50)
+
+lots_of_penguins <- list(penguins_1, penguins_2, penguins_3)
+
+```
+
+Sometimes you may wish to run the same plotting function on multiple datasets. There's a simple way and a slightly-weird-but-works way.
+
+Note that this is a contrived example and that this is not the simplest way of doing this particular thing.
+
+### Simple
+
+```{r}
+
+walk(lots_of_penguins, function(x) {
+  
+  p <- x %>% 
+    ggplot(aes(flipper_length_mm, body_mass_g)) +
+    geom_point()
+  
+  print(p)
+})
+
+```
+
+### Slightly-weird-but-works
+
+```{r}
+
+walk(paste0("penguins_", 1 : 3), function(x) {
+  
+  df <- get(x) 
+  
+  p <- df %>% 
+    ggplot(aes(flipper_length_mm, body_mass_g)) +
+    geom_point()
+  
+  print(p)
+})
+
+```
+
