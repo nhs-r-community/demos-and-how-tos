@@ -63,3 +63,21 @@ walk(paste0("penguins_", 1 : 3), function(x) {
 
 ```
 
+### Add a title
+
+```{r}
+
+penguin_names <- c("Penguin one", "Penguin two", "Penguin three")
+
+walk2(lots_of_penguins, penguin_names, function(x, y) {
+  
+  p <- x %>% 
+    ggplot(aes(flipper_length_mm, body_mass_g)) +
+    geom_point() + 
+    ggtitle(y)
+  
+  print(p)
+})
+
+```
+
