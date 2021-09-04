@@ -24,16 +24,16 @@ covid <- medicaldata::covid_testing
 
 # make several datasets
 
-covid_ed <- covid %>% 
+covid_1 <- covid %>% 
   filter(clinic_name == "emergency dept")
 
-covid_inpt_a <- covid %>% 
+covid_2 <- covid %>% 
   filter(clinic_name == "inpatient ward a")
 
-covid_urgent_care <- covid %>% 
+covid_3 <- covid %>% 
   filter(clinic_name == "urgent care center")
 
-lots_of_tests <- list(covid_ed, covid_inpt_a, covid_urgent_care)
+lots_of_tests <- list(covid_1, covid_2, covid_3)
 
 ```
 
@@ -57,6 +57,25 @@ walk(lots_of_tests, function(x) {
   
   print(p)
 })
+```
+
+### Slightly-weird-but-works
+
+```{r}
+
+walk(paste0("covid_", 1 : 3), function(x) {
+  
+  df <- get(x) 
+  
+  p <- df %>% 
+    ggplot(aes(ct_result, pan_day)) +
+    geom_point() +
+    labs(x = "PCR Result\n(lower threshold cycle # means higher viral load",
+         y = "Pandemic Day")
+  
+  print(p)
+})
+
 ```
 
 ### Add a title
