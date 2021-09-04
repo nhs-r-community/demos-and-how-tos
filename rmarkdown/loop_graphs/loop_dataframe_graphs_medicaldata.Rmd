@@ -1,0 +1,81 @@
+---
+title: "Loop graphs in RMarkdown using medicaldata"
+author: "Zoë Turner"
+date: "04/09/2021"
+output: html_document
+---
+
+# Original RMarkdown
+
+This example is a copy of the original by [Chris Beeley](https://github.com/nhs-r-community/demos-and-how-tos/blob/main/rmarkdown/loop_graphs/loop_dataframe_graphs.Rmd) which uses the {palmerpenguins} package. Chris and I were contacted by [Peter Higgins](https://twitter.com/ibddoctor) after our discussions about this on [Twitter](https://twitter.com/Letxuga007/status/1433729592896991261) and he shared the code for the package {medicaldata} using the same format Chris had shared. This is is his code within the original RMarkdown layout that Chris had created. 
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+
+# install.package("medicaldata") # uncomment to load package from CRAN
+
+library(medicaldata)
+library(tidyverse)
+
+# load the covid_testing data from the package
+
+covid <- medicaldata::covid_testing
+
+# make several datasets
+
+covid_ed <- covid %>% 
+  filter(clinic_name == "emergency dept")
+
+covid_inpt_a <- covid %>% 
+  filter(clinic_name == "inpatient ward a")
+
+covid_urgent_care <- covid %>% 
+  filter(clinic_name == "urgent care center")
+
+lots_of_tests <- list(covid_ed, covid_inpt_a, covid_urgent_care)
+
+```
+
+Sometimes you may wish to run the same plotting function on multiple datasets. There's a simple way and a slightly-weird-but-works way.
+
+Note that this is a contrived example and that this is not the simplest way of doing this particular thing.
+
+### Simple
+
+For this data (unlike for {palmerpenguins}) there are warnings about rows being deleted because of missing values.
+
+```{r}
+
+walk(lots_of_tests, function(x) {
+  
+  p <- x %>% 
+    ggplot(aes(ct_result, pan_day)) +
+    geom_point() +
+    labs(x = "PCR Result\n(lower threshold cycle # means higher viral load",
+         y = "Pandemic Day")
+  
+  print(p)
+})
+```
+
+### Add a title
+
+```{r}
+
+testgroup_names <- c("Covid tests in ED", "Covid tests in inpatient Ward A", "Covid tests in Urgent Care")
+
+walk2(lots_of_tests, testgroup_names, function(x, y) {
+  
+  p <- x %>% 
+    ggplot(aes(ct_result, pan_day)) +
+    geom_point() + 
+    ggtitle(y) +
+    labs(x = "PCR Result\n(lower threshold cycle # means higher viral load)",
+         y = "Pandemic Day")
+  
+  print(p)
+})
+
+```
+
