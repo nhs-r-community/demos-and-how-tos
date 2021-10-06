@@ -1,0 +1,35 @@
+
+ui <- fluidPage(
+  
+  # Application title
+  titlePanel("Dynamic tag list"),
+  
+  sidebarLayout(
+    sidebarPanel(
+      checkboxInput("show_tab", "Show the optional tab?")
+    ),
+    
+    # Show a plot of the generated distribution
+    mainPanel(
+      uiOutput("main_panelUI")
+    )
+  )
+)
+
+# Define server logic required to draw a histogram
+server <- function(input, output) {
+  
+  output$main_panelUI <- renderUI({
+    
+    ui_list <- list(
+      
+      tabPanel("Panel one", h2("Hello!")),
+      tabPanel("Panel two", h2("Peekaboo!"))
+    )
+    
+    do.call(tabsetPanel, ui_list)
+  })
+}
+
+# Run the application 
+shinyApp(ui = ui, server = server)
