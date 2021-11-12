@@ -1,0 +1,59 @@
+---
+title: "LSOA population - web scraping a zip file"
+author: "NHS-R Community"
+date: "12/11/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(withr)
+library(readxl)
+library(tidyverse)
+```
+
+#### Background
+
+Originally published in a NHS-R Community [blog](https://nhsrcommunity.com/blog/using-sf-to-calculate-catchment-areas/)
+.by Tom Jemmett
+
+## Web scraping
+
+Download the LSOA population estimates from ons website: for some reason they
+provide this download as an excel file in a zip file, so we need to download
+the zip then extract the file, but we don't need to keep the zip after. {withr}
+handles this temporary like file for us:
+
+```{r web-scrape}
+if (!file.exists("SAPE22DT2-mid-2019-lsoa-syoa-estimates-unformatted.xlsx")) {
+  withr::local_file("lsoa_pop_est.zip", {
+    download.file(
+      paste0(
+        "https://www.ons.gov.uk/file?uri=/peoplepopulationandcommunity/",
+        "populationandmigration/populationestimates/datasets/",
+        "lowersuperoutputareamidyearpopulationestimates/mid2019sape22dt2/",
+        "sape22dt2mid2019lsoasyoaestimatesunformatted.zip"
+      ),
+      "lsoa_pop_est.zip",
+      mode = "wb"
+    )
+    unzip("lsoa_pop_est.zip")
+  })
+}
+```
+
+
+```{r read-excel}
+lsoa_pop_estimates <- readxl::read_excel(
+  "SAPE22DT2-mid-2019-lsoa-syoa-estimates-unformatted.xlsx",
+  "Mid-2019 Persons",
+  skip = 3
+) %>%
+  dplyr::select(LSOA11CD = `LSOA Code`, pop = `All Ages`)
+```
+
+
+```{r pop-estimates}
+head(lsoa_pop_estimates)
+```
