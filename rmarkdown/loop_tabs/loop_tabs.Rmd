@@ -1,0 +1,56 @@
+---
+title: "loop_tabs"
+author: "Zoë Turner"
+date: "24/11/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, 
+                      message = FALSE, 
+                      warning = FALSE, 
+                      results = 'asis')
+
+library(qicharts2)
+library(tidyverse)
+library(lubridate)
+
+```
+
+## Gender {.tabset .tabset-fade}
+
+
+```{r loop-with-tabs}
+
+gender <- cabg %>% 
+  select(gender) %>% 
+  unique() %>% 
+  pull()
+
+for(i in gender){ 
+  
+  cat("###", i, '<br>', '\n')
+  
+  # data from the qicharts2 package, vignette https://cran.r-project.org/web/packages/qicharts2/vignettes/qicharts2.html#faceting-readmission-rates-by-gender
+  cabg_by_month_gender <- cabg %>% 
+    filter(gender == i) %>% 
+    mutate(month = lubridate::floor_date(date, 'month')) %>% 
+    group_by(month) %>% 
+    summarise(readmissions = sum(readmission),
+              n            = n())
+  
+  chart <- qic(month, readmissions, n,
+              data      = cabg_by_month_gender,
+              chart     = 'run',
+              y.percent = TRUE,
+              title     = 'Readmissions within 30 days (run chart)',
+              ylab      = '',
+              xlab      = 'Month')
+  
+  
+  print(chart)
+  
+  cat('\n', '<br>', '\n\n')
+  
+}
+```
