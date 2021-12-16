@@ -1,0 +1,112 @@
+---
+title: "Summary statistics and 95% CIs"
+author: "Chris Beeley"
+date: "16/12/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+How to calculate summary statistics using the inbuilt mtcars dataset, and use the calculation to plot column charts featuring error bars using either stderr or 95% confidence intervals 
+
+This submission was made by the committer on behalf of the excellent [Daniel Weiand](https://twitter.com/send2dan)
+
+```{r}
+
+library(dplyr)
+library(ggplot2)
+
+#calculate summary statistics using summary() 
+mtcars %>% 
+  select(where(is.numeric)) %>%  
+  summary()
+
+```
+
+```{r}
+
+#create stderr function
+stderr <- function(x, na.rm=TRUE) {
+  if (na.rm) x <- na.omit(x)
+  sqrt(var(x)/length(x))
+}
+
+#calculate summary statistics using summarise() and across() and n/mean/min/median/max/sd/stderr
+# stderr <- function(x, na.rm=TRUE) {
+#   if (na.rm) x <- na.omit(x)
+#   sqrt(var(x)/length(x))
+# }
+mtcars %>% 
+  group_by(cyl) %>% 
+  mutate(
+    across(mpg, 
+           list(
+             n = ~ n(),
+             mean = ~ mean(.x, na.rm = TRUE),
+             min = ~ min(.x, na.rm = TRUE),
+             median = ~ median(.x, na.rm = TRUE),
+             max = ~ max(.x, na.rm = TRUE),
+             sd = ~ sd(.x, na.rm = TRUE),
+             stderr = ~ stderr(.x)),
+           .names = NULL)) %>%
+  select(starts_with("mpg")) %>% 
+  summarise(mean = mean(mpg_mean),
+            min = mean(mpg_min),
+            median = mean(mpg_median),
+            max = mean(mpg_max),
+            sd = mean(mpg_sd),
+            stderr = mean(mpg_stderr)) %>% 
+  #create column chart with error bars (using stderr) 
+  ggplot(aes(cyl, mean))+
+  geom_col(na.rm = TRUE)+
+  geom_errorbar(aes(ymin = mean-stderr, ymax = mean+stderr), position = "dodge", width = 0.25)
+
+```
+
+```{r}
+
+# create MEAN column chart with error bars (using 95% confidence intervals) 
+require(PHEindicatormethods)
+
+mtcars %>% 
+  filter(!is.na(cyl)) %>% 
+  group_by(cyl) %>% 
+  #use phe_mean()
+  phe_mean(x = mpg, #field name from data containing the values to calculate the means for
+           type = "full", #defines the data and metadata columns to be included in output; can be "value", "lower", "upper", "standard" (for all data) or "full" (for all data and metadata); quoted string; default = "full"
+           confidence = 0.95) %>% #required level of confidence expressed as a number between 0.9 and 1
+  #create column chart with error bars (using 95% CI calculated using phe_mean())
+  ggplot(aes(cyl, value))+
+  geom_col(na.rm = TRUE)+
+  geom_errorbar(aes(ymin = lowercl, ymax = uppercl), position = "dodge", width = 0.25)
+
+```
+
+
+```{r}
+
+# create PROPORTION column chart with error bars (using 95% confidence intervals) 
+
+require(PHEindicatormethods)
+
+mtcars %>% 
+  group_by(cyl) %>% 
+  summarise(n = n(),
+            sum = sum(n)) %>% 
+  mutate(sum = sum(n)) %>%
+  #phe_proportion()
+  phe_proportion(x = n, #numerator
+                 n = sum, #denominator
+                 type = "full", #defines the data and metadata columns to be included in output; can be "value", "lower", "upper", "standard" (for all data) or "full" (for all data and metadata); quoted string; default = "full"
+                 confidence = 0.95, #required level of confidence expressed as a number between 0.9 and 1 
+                 multiplier = 100) %>% 	#the multiplier used to express the final values (eg 100 = percentage); numeric; default 1
+  #create column chart with error bars (using 95% CI calculated using phe_proportion())
+  ggplot(aes(cyl, value))+
+  geom_col(na.rm = TRUE)+
+  geom_errorbar(aes(ymin = lowercl, ymax = uppercl), position = "dodge", width = 0.25)
+```
+
