@@ -1,0 +1,60 @@
+---
+title: "Demographic report for `r params$country`"
+author: "Jon Minton"
+date: "15/03/2022"
+output: pdf
+params: 
+  code: "GBR_SCO"
+  country: "Scotland"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+pacman::p_load(tidyverse)
+
+
+this_lt <- all_lt %>% 
+  filter(code == params$code)
+
+other_lt <- all_lt %>% 
+  filter(!(code == params$code))
+
+min_year <- min(this_lt$Year)
+max_year <- max(this_lt$Year)
+
+```
+
+# Introduction
+
+This is an attempt at a template for generating multiple markdown reports using parameters. 
+
+It is based on the information on [the relevant section](https://bookdown.org/yihui/rmarkdown-cookbook/parameterized-reports.html) of the [rmarkdown cookbook](https://bookdown.org/yihui/rmarkdown-cookbook/) website. 
+
+
+# Introduction
+
+`r params$country`, represented in the HMD by the code `r params$code`, has available data for the years `r min_year` to `r max_year`. Its life expectancy at birth over time is shown in red below, with other countries shown in a muted grey for comparison. 
+
+
+```{r, echo = FALSE, fig.width = 8, fig.height = 6}
+this_lt %>% 
+  filter(Age == 0) %>% 
+  ggplot(aes(x = Year, y = ex)) + 
+  geom_line(
+    aes(x = Year, y = ex, group = code), 
+    color = "lightgray", inherit.aes = FALSE, 
+    data = other_lt %>% 
+      filter(Age == 0)
+  ) + 
+  geom_line(color = "darkred", size = 1.2) + 
+  facet_wrap(~sex) +
+  labs(x = "Year", y = "Life expectancy at birth",
+       title = glue::glue("Life expectancy at birth for {params$country}")
+  )
+
+
+```
+
+
+
