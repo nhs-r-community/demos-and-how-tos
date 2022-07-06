@@ -1,0 +1,92 @@
+---
+title: "Example map using new NHS boundaries"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+
+knitr::opts_chunk$set(echo = TRUE)
+options(width = 1200)
+
+
+library(shiny)
+library(leaflet)
+library(RColorBrewer)
+library(readr) #TO READ URL
+library(tidyverse) #JOINING FUNCTIONS
+library(sf) #TO READ MAPPING BOUNDARIES
+library(geojsonio)
+library(spatialEco)
+library(leaflet.extras)
+
+
+
+# Load a map - taken from https://geoportal.statistics.gov.uk/search?collection=Dataset&sort=name&tags=all(BDY_ICB%2CJUL_2022) 
+
+map1 <- geojsonio::geojson_read("Integrated_Care_Boards_(July_2022)_EN_BGC.geojson", what = "sp")
+
+
+# Link some data using the same codes - this is a file that is ICB22CD and some data.
+listareas <- read.csv("C:/Users/aporter1/OneDrive - NHS England/listareas.csv")
+
+
+# create a random value to colour the systems in...
+listareas$colourvalue <- sample (100, size= nrow(listareas), replace = TRUE)
+
+
+#merge the data into one file - linking the two data sets. it's a bit funky as merging a polygons frame.
+map1@data <- merge(x=map1@data,y=listareas,by.x="ICB22CD",by.y="ICB22CD",all.x=TRUE)
+
+# Set a colour palette function. Approximates NHS colours using Blues!
+pal <- colorBin(palette=brewer.pal(n = 6, name = "Blues"),listareas$colourvalue, bins=5)
+
+
+# create hover over labels
+labels <- sprintf(
+    "<strong>%s</strong><br/>Size %g",
+    map1@data$ICB22NM.x, map1@data$Shape__Area.x
+  ) %>% lapply(htmltools::HTML)
+  
+  
+
+```
+
+## Example Map, using Leaflet, and new ICB boundary files
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+# Your first map
+
+```{r 101,  echo=FALSE}
+
+  leaflet(map1, height=900, width=1200) %>%
+      addTiles() %>%
+      addPolygons(
+        fillColor = ~pal(map1@data$colourvalue),
+        weight = 0.4, #BORDER LINE THICKNESS
+        opacity = 1,
+        color = "white",
+        dashArray = "3",
+        fillOpacity = 0.7,
+        highlightOptions = highlightOptions(
+          weight = 0.4, #HIGHLIGHTED BORDER LINE THICKNESS
+          color = "#666",
+          dashArray = "",
+          fillOpacity = 0.7,
+          bringToFront = TRUE), label = labels,
+        labelOptions = labelOptions(
+          style = list("font-weight" = "normal", padding = "3px 8px"),
+          textsize = "15px",
+          direction = "auto")) %>%
+      addLegend(pal = pal, values = seq(1:5), opacity = 0.7,
+                title = "New NHS ICB example map",
+                position = "bottomright") %>% 
+    addLabelOnlyMarkers(listareas$LONG, listareas$LAT, label =  ~as.character(listareas$ICB22NM), labelOptions = labelOptions(noHide = T, direction = 'top', textOnly = T)) %>% 
+           addFullscreenControl()
+```
+
+
+
