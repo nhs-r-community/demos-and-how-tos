@@ -2,6 +2,8 @@ Hi
 
 This is an example map script for ICB data linked to some random data for mapping ICBs, to create a leaflet map for comparing NHS systems. 
 
+See a demo here: https://aporter121.github.io/r-stuff/example-ICB-map.html 
+
 Simple features;
 - labeling areas, currently with system name
 - a button to go full screen
