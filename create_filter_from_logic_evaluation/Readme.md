@@ -47,11 +47,18 @@ Can be used to create the expression
 ce1_filter <- "EVENT == Troponin Serum & EVENT_RESULT_TXT >=14"
 ```
 
-Which can then be evaluated:  
+Which can then be evaluated locally using:  
 
 ```
-database %>% 
+dataframe %>% 
    filter(eval(str2expression(ce1_filter)))
+```
+
+or on a remote database using
+
+```
+dataframe %>% 
+   filter(!!parse_expr(ce1_filter))
 ```
 
 The script does this using penguin data. 
