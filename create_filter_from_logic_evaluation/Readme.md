@@ -44,7 +44,7 @@ ce1_result <- "14"
 Can be used to create the expression 
 
 ```
-ce1_filter <- "EVENT == Troponin Serum & EVENT_RESULT_TXT >=14"
+ce1_filter <- "EVENT == 'Troponin Serum' & EVENT_RESULT_TXT >=14"
 ```
 
 Which can then be evaluated locally using:  
