@@ -13,7 +13,7 @@
 
 usethis::edit_r_environ()
 
-#The add your credintials
+#Then add your credentials
 
 EMAIL_ADDRESS = "name.name@nhs.net"
 EMAIL_PASSWORD = "This!s@Pa55word"
