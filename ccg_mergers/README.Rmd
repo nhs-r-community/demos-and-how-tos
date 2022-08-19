@@ -31,10 +31,26 @@ devtools::install_github("NHS-R-Community/NHSRtools")
 
 First, let's get a list of all of the CCG's that have ever existed from the [ODS API][ods_api]. The API returns not only the CCG's but also commisioning hubs, so we simply filter the list to only include rows where the name starts with "NHS" and ends in "CCG".
 
+*Update August 2022*: Some of the CCG's have been renamed to indicate that they are now part of an ICB. We need to include these in the filter, but update these back to the CCG's as they were in April 2021.
+
 ```{r get ccgs}
-ccgs <- NHSRtools::ods_get_ccgs() |>
-  select(name, org_id, last_change_date, status) |>
-  filter(str_detect(name, "^NHS .* CCG$"))
+ccgs <- local({
+  ccgs_21 <- httr::modify_url(
+    "https://opendata.arcgis.com/api/v3/datasets/48fc517976fd495c80a2fbde97b103e6_0/downloads/data",
+    query = list(
+      where = "1=1",
+      spatialRefId=4326,
+      format = "csv"
+    )
+  ) |>
+    read_csv(col_types = "__cc") |>
+    rename(name = CCG21NM, org_id = CCG21CDH)
+  
+  NHSRtools::ods_get_ccgs() |>
+    select(name, org_id, last_change_date, status) |>
+    filter(str_detect(name, "^NHS .* (CCG|ICB - [A-Z0-9]{3,5})$")) |>
+    rows_update(ccgs_21, by = "org_id")
+})
 
 ccgs
 ```
@@ -84,7 +100,7 @@ inner_join(
 )
 ```
 
-There has been a case where this has happened, so simply joining to our dataset will not work - consider we are looking at 2016 data and we have a row for CCG "10G". We join to `ccg_successors` and we get the code "15D". But "15D" became "D3U1Y" in 2021, so we would need to repeat this process again to get the correct result. Something like
+There has been a case where this has happened, so simply joining to our dataset will not work - consider we are looking at 2016 data and we have a row for CCG "10G". We join to `ccg_successors` and we get the code "15D". But "15D" became "D4U1Y" in 2021, so we would need to repeat this process again to get the correct result. Something like
 
 
 ```{r updating ccgs with 2nd order merge simply, eval = FALSE}
@@ -96,7 +112,8 @@ ccgs |>
     ccg_successors,
     ccg_successors,
     by = c("new_code" = "old_code")
-  ) |> select(old_code, new_code = new_code.y), by = "old_code")
+  ) |>
+    select(old_code, new_code = new_code.y), by = "old_code")
 ```
 
 This is pretty messy, and what happens if next year D4U1Y mergers with another CCG? This is a problem that would be best solved with a [graph][graph].
