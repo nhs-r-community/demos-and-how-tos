@@ -10,7 +10,7 @@ We can access the current year directly from the HTML, however, as it is display
 
 ## What is going on in the JavaScript
 
-This is the JavScript snippet:
+This is the JavaScript snippet:
 
 ```js
 // There are 4 elements with slider-label as class name, the first one is
