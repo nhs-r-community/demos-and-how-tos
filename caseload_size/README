@@ -1,0 +1,6 @@
+Test data is produced in test_data.R. Please produce a function that accepts a date or range of dates and a team and calculates how many patients were open to that team at the time.
+
+If discharge date is NA it means they are still in the team on the day the function is run. Client ID is NHS number or similar, and referral id disambiguates individual referrals for the same patient.
+
+If you would like to add other or better examples, or to change this one, please do :slightly_smiling_face: 
+
