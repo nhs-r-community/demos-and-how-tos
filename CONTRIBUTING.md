@@ -1,6 +1,6 @@
 # Contributing
 
-Thank you for your interest in contributing to the demos and how-tos repository.
+Thanks for your interest in contributing to the demos and how-tos repository.
 
 The NHS-R Community welcomes contributions in the form of:
 
