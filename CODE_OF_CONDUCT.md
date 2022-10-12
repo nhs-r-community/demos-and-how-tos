@@ -6,9 +6,11 @@ We are committed to making participation in this project a harassment-free exper
 
 Examples of unacceptable behaviour by participants include the use of sexual language or imagery, derogatory comments or personal attacks, trolling, public or private harassment, insults, or other unprofessional conduct.
 
+Instances of abusive, harassing, or otherwise unacceptable behaviour may be reported by opening an issue or contacting one or more of the project maintainers.
+
 Project maintainers have the right and responsibility to remove, edit, or reject comments, commits, code, wiki edits, issues, and other contributions that are not aligned to this Code of Conduct. Project maintainers who do not follow the Code of Conduct may be removed from the project team.
 
-Instances of abusive, harassing, or otherwise unacceptable behaviour may be reported by opening an issue or contacting one or more of the project maintainers.
+Where behaviour of any project maintainers requires investigation, this can be raised as an issue and/or directed to the central administration team via [nhs.rcommunity@nhs.net](mailto:nhs.rcommunity@nhs.net).
 
 In all cases, documentation and conduct should reflect [NHS Values](https://www.hee.nhs.uk/about/our-values/nhs-constitutional-values-hub-0).
 
