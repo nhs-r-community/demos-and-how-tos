@@ -25,13 +25,13 @@ To contribute:
 
 ## Using issues
 
-If you spot something that needs to be changed, or would like to suggest some new content, please raise an issue to alert the community.
+If you spot something that needs to be changed, or would like to suggest some new content, please raise an issue.
 
 Before raising a new issue, have a look through the existing ones in case it's already been raised.
 
 ## Pull requests and merging
 
-If you have a change (or a new page) to raise, please create an issue first. This alerts the community, as there may be someone thinking of contributing something similar.
+If you have a change (or a new page) to raise, please create an issue first as there may be someone thinking of contributing something similar.
 
 You can't push to the main branch. For all changes you will need to create a fork, and then a pull request (click compare across forks and select your version).
 
@@ -42,7 +42,7 @@ Please [reference the issue the pull request resolves](https://docs.github.com/e
 - Preview your Markdown code to make sure the format is not broken.
 - Material, including commit messages, should be written in clear and simple English.
 - Check grammar, spelling and punctuation.
-- Nothing included should be confidential, private or disclose any personal data.
+- Nothing included should be confidential, private or disclose any personal or sensitive data.
 - New directories should be created for each new demo or collection of related how-tos.
 - Follow the [code of conduct](./CODE_OF_CONDUCT.md) at all times
 
