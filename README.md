@@ -18,12 +18,8 @@ install.packages("palmerpenguins")
 
 if you haven't already :smiley:
 
-### How to contribute
+## Contributing
 
-- Be logged into your own GitHub account
-- Fork this repository
-- Add your scripts
-- Commit and push to your own repository
-- Create a new pull request: (click compare across forks and select your version)
-- Wait for pull request to merge
-- Celebrate your first step into the open source world and contribute more
+Please see our [guidance on how to contribute](./CONTRIBUTING.md).
+
+This project is released with a Contributor [Code of Conduct](./CODE_OF_CONDUCT.md). By contributing to this project, you agree to abide by its terms.
