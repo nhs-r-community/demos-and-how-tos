@@ -23,7 +23,7 @@ tar_plan(
       file_name}) () ),
   
   #################
-  ### Gothcas   ###
+  ### Gotchas   ###
   #################
   
   # Doesn't know that input is a file and not just a string
