@@ -1,0 +1,4 @@
+Set of GGPLOT visualizations
+
+- Using facet_wrap() to produce a grid of plots
+- Using different geoms to plot distributions
