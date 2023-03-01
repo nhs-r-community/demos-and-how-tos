@@ -1,1 +1,0 @@
-This is a project displaying several types of visualization in GGPLOT2
