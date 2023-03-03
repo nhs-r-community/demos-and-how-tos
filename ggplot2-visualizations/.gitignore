@@ -1,0 +1,105 @@
+# Ignoring the following set of files
+
+# Ignore images created by camcoder to build final gif file 
+printf '*.jpg\n*.jpeg\n*.png\n*.gif\n' >> .gitignore
+
+/ggplot2-visualizations/2023_02_23_09_07_29.639926.png
+/ggplot2-visualizations/2023_02_23_09_07_29.799705.png
+/ggplot2-visualizations/2023_02_23_09_07_30.028700.png
+/ggplot2-visualizations/2023_02_23_09_07_29.799705.png
+/ggplot2-visualizations/2023_02_23_09_07_30.028700.png
+/ggplot2-visualizations/2023_02_23_09_07_30.239701.png
+/ggplot2-visualizations/2023_02_23_09_07_30.437709.png
+/ggplot2-visualizations/2023_02_23_09_07_30.651705.png
+/ggplot2-visualizations/2023_02_23_09_07_30.887742.png
+/ggplot2-visualizations/2023_02_23_09_07_31.135740.png
+/ggplot2-visualizations/2023_02_23_09_07_31.372740.png
+/ggplot2-visualizations/2023_02_23_09_07_31.583744.png
+/ggplot2-visualizations/2023_02_23_09_07_31.788753.png
+/ggplot2-visualizations/2023_02_23_09_07_32.005593.png
+/ggplot2-visualizations/2023_02_23_09_07_32.263601.png
+/ggplot2-visualizations/2023_02_23_09_07_32.501281.png
+/ggplot2-visualizations/2023_02_23_09_07_58.010741.png
+/ggplot2-visualizations/2023_02_23_09_07_58.170332.png
+/ggplot2-visualizations/2023_02_23_09_07_58.395335.png
+/ggplot2-visualizations/2023_02_23_09_07_58.584336.png
+/ggplot2-visualizations/2023_02_23_09_07_58.791326.png
+/ggplot2-visualizations/2023_02_23_09_07_58.990328.png
+/ggplot2-visualizations/2023_02_23_09_07_59.244924.png
+/ggplot2-visualizations/2023_02_23_09_07_59.478950.png
+/ggplot2-visualizations/2023_02_23_09_07_59.715933.png
+/ggplot2-visualizations/2023_02_23_09_07_59.943401.png
+/ggplot2-visualizations/2023_02_23_09_08_00.174556.png
+/ggplot2-visualizations/2023_02_23_09_08_00.422555.png
+/ggplot2-visualizations/2023_02_23_09_08_00.678560.png
+/ggplot2-visualizations/2023_02_23_09_08_00.934180.png
+
+# History files
+
+.Rhistory
+
+.Rapp.history
+
+
+
+# Session Data files
+
+.RData
+
+
+
+# User-specific files
+
+.Ruserdata
+
+
+
+# Example code in package build process
+
+*-Ex.R
+
+
+
+# Output files from R CMD build
+
+/*.tar.gz
+
+
+
+# Output files from R CMD check
+
+/*.Rcheck/
+
+
+
+# RStudio files
+
+.Rproj.user/
+
+
+
+# produced vignettes
+
+vignettes/*.html
+
+vignettes/*.pdf
+
+
+
+# OAuth2 token, see https://github.com/hadley/httr/releases/tag/v0.3
+
+.httr-oauth
+
+
+
+# knitr and R markdown default cache directories
+
+*_cache/
+
+/cache/
+
+
+
+# Temporary files created by R markdown
+
+*.utf8.md
