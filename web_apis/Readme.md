@@ -149,7 +149,7 @@ using [JSON](https://en.wikipedia.org/wiki/JSON). This allows very
 complex data to be returned, but this may not necessarily be easy to
 work with in R. We may want to need to convert the data into a tibble -
 while this tutorial isn’t intended to explain this topic, you may want
-to start [here](https://github.com/jennybc/repurrrsive).
+to start with a look at [repurrrsive](https://github.com/jennybc/repurrrsive).
 
 First, we need to get a bit of an idea on the structure of the data. As
 we searched for 3 postcodes, we expect 3 results.
