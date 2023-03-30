@@ -2,10 +2,6 @@
 
 # demos-and-how-tos
 
-<a href="https://join.slack.com/t/nhsrcommunity/shared_invite/zt-1e9394oqf-jHVOUf_8ZmMqGjGWsfPllw">
-<img alt="Join us on Slack" src="https://raw.githubusercontent.com/netlify/netlify-cms/master/website/static/img/slack.png" width="165"/>
-</a>
-
 ### A repo for community contributed demos and how-tos to get common stuff done in the R language
 
 ### Before you get started
