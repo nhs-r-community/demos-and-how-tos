@@ -9,7 +9,7 @@
 # MAY 2022   <a href=https://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2022/07/Full-CSV-data-file-May22-ZIP-3611K-16155.zip>Full CSV data file May22 (ZIP, 3611K)</a>
 # JUNE 2022  <a href=https://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2022/08/Full-CSV-data-file-Jun22ZIP-3886K-68395.zip>Full CSV data file Jun22(ZIP, 3886K)</a>
 
-# Check WD directory file system
+# Function to download RTT data from  NHS England website
 RTTdata <- function() {
   
   if(!dir.exists("data")){dir.create("data")}
