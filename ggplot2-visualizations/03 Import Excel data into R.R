@@ -1,7 +1,11 @@
 # 03 Import Excel data into R c
 
 # Load required packages at once (readxl,here,dplyr,janitor)
-pacman::p_load(readxl,here,dplyr,janitor)
+
+library(readxl)
+library(here)
+library(dplyr)
+library(janitor)
 
 Excel_file <-list.files (path = "./data" ,pattern = "xlsx$")
 Excel_file
