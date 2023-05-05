@@ -1,6 +1,6 @@
 # 03 Import Excel data into R c
 
-# Load required packages at once (readxl,here,dplyr,janitor)
+# Load required packages at once (readxl,here,dplyr,janitor) 
 
 library(readxl)
 library(here)

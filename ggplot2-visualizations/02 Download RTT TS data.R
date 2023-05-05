@@ -17,7 +17,7 @@
 # xlsFile = "refugios_nayarit.xlsx"
 # download.file(url=urlFile, destfile=xlsFile, mode="wb")
 
-# Check WD directory file system 
+# Check WD directory file system  
 RTT_TS_data <- function() {
   
   if(!dir.exists("data")){dir.create("data")}
