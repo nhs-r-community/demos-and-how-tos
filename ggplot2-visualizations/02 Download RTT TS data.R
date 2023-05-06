@@ -17,7 +17,7 @@
 # xlsFile = "refugios_nayarit.xlsx"
 # download.file(url=urlFile, destfile=xlsFile, mode="wb")
 
-# Check WD directory file system  
+# Check WD directory file system 
 RTT_TS_data <- function() {
   
   if(!dir.exists("data")){dir.create("data")}
@@ -26,11 +26,11 @@ RTT_TS_data <- function() {
   # Download Excel file to a Project sub-folder called "data"
   # Created previously using an adhoc project structure function
   
-  xlsFile <- "RTT_TS_data.xlsx"
+  xlsFile = "RTT_TS_data.xlsx"
   
   download.file(
     url = 'https://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2023/01/RTT-Overview-Timeseries-Including-Estimates-for-Missing-Trusts-Nov22-XLS-98K-63230.xlsx',
-    destfile = here("data",xlsFile),
+    destfile = here::here("data",xlsFile),
     mode ="wb"
   )
 
