@@ -1,4 +1,4 @@
-# 03 Import Excel data into R c
+# 03 Import Excel data into R.R 
 
 # Load required packages at once (readxl,here,dplyr,janitor) 
 
@@ -7,19 +7,25 @@ library(here)
 library(dplyr)
 library(janitor)
 
-Excel_file <-list.files (path = "./data" ,pattern = "xlsx$")
-Excel_file
+
+# Added "where_am_i" across all instances an absolute path is required 
+
+where_am_i <- here::here()
+
+excel_file <- list.files (paste0(where_am_i,"/ggplot2-visualizations/data"),pattern = "xlsx$")
+excel_file
+
 
 # [1] "RTT_TS_data.xlsx"
-Excel_tabs <- excel_sheets("./data/RTT_TS_data.xlsx")
-Excel_tabs
+excel_tabs <- excel_sheets(paste0(where_am_i,"/ggplot2-visualizations/data/RTT_TS_data.xlsx"))
+excel_tabs
 
 # We read in data from Excel using READXL package
 # From "readxl" package we use the read_excel function to read in data from Excel file
 
 # Parameters
 # sheet = number [Number of sheet to be imported]
-# skiep = number [Number of rows from the top of the file to be skipped when importing data into Excel]
+# skip = number [Number of rows from the top of the file to be skipped when importing data into Excel]
 # range = "C10:F18" [Range of rows from a specific sheet to be Imported into R]
 # na = ""   [How missing values are defined in the input file "-", "#" ]
 
@@ -40,25 +46,25 @@ Excel_tabs
 
 # Let's try to import it just by specifying the number of rows to ommit
 
-pacman::p_load(readxl,here,dplyr,janitor)
+
 
 # 1-3 First get the File name we want to import 
-Excel_file <-list.files (path = "./data" ,pattern = "xlsx$")
-Excel_file
+excel_file <- list.files (paste0(where_am_i,"/ggplot2-visualizations/data"),pattern = "xlsx$")
+excel_file
 # [1] "RTT_TS_data.xlsx"
 
 # 2-3 Then get the Tab names to choose which one to import (with multi tab files)
-Excel_tabs <- excel_sheets("./data/RTT_TS_data.xlsx")
-Excel_tabs
+excel_tabs <- excel_sheets(paste0(where_am_i,"/ggplot2-visualizations/data/RTT_TS_data.xlsx"))
+excel_tabs
 #[1] "Full Time Series"
 
 # Start applying all these parameters to our function
-RTT_Data <- read_excel(here("data","RTT_TS_data.xlsx"),sheet = "Full Time Series")
+RTT_Data <- read_excel(paste0(where_am_i,"/ggplot2-visualizations/data/RTT_TS_data.xlsx"),sheet = "Full Time Series")
 RTT_Data
 
 # 1. Add argument to skip first 10 rows of data
 # So this will get us the right Table headings
-RTT_Data <- read_excel(here("data","RTT_TS_data.xlsx"),sheet = "Full Time Series",
+RTT_Data <- read_excel(paste0(where_am_i,"/ggplot2-visualizations/data/RTT_TS_data.xlsx"),sheet = "Full Time Series",
                        skip = 10)
 RTT_Data
 
@@ -67,16 +73,16 @@ names(RTT_Data)
 # 2.Add na argument to get rid of missing values  na = "-"  
 # In this particular example, missing values are defined by "-" character
 # Try to adjust the spaces for the missing values
-RTT_Data <- read_excel(here("data","RTT_TS_data.xlsx"),sheet = "Full Time Series",
+RTT_Data <- read_excel(paste0(where_am_i,"/ggplot2-visualizations/data/RTT_TS_data.xlsx"),sheet = "Full Time Series",
                        skip = 10 , na = "-")
 
 RTT_Data
 
 # 3. Use Janitor package to get clear names using "clear_names()"function
-# THis file worked fine and solves:
-# a. Importing null values from origingal file defined as "-"
+# This file worked fine and solves:
+# a. Importing null values from original file defined as "-"
 # b. Cleaning original variable names using clean_names() function from Janitor package
-RTT_Data <- read_excel(here("data","RTT_TS_data.xlsx"),sheet = "Full Time Series",
+RTT_Data <- read_excel(paste0(where_am_i,"/ggplot2-visualizations/data/RTT_TS_data.xlsx"),sheet = "Full Time Series",
                        skip = 10 , na = "-") %>% 
   clean_names()
 
@@ -86,14 +92,13 @@ Variable_names <- names(RTT_Data)
 Variable_names
 
 # 4. As we can see we have plenty of variables, we will start by subsetting them and keeping just TWO
-# x2 that will correspond to "Date" and "TOtal witing(Mil)" That corresponds to Total figure of incomplete pathways or waiting list
+# x2 that will correspond to "Date" and "Total waiting(Mil)" That corresponds to Total figure of incomplete pathways or waiting list
 
 RTT_data_sub <- RTT_Data %>% 
   select(x2,total_waiting_mil)
 RTT_data_sub    
 
-# Now er can rename the variable appropriately
-
+# Now rename the variable appropriately
 RTT_data <- RTT_data_sub %>% select(Date = x2, Total_waiting = total_waiting_mil)
 RTT_data
 
