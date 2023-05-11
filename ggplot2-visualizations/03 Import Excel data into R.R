@@ -19,7 +19,7 @@ excel_tabs <- excel_sheets(paste0(where_am_i,"/ggplot2-visualizations/data/RTT_T
 excel_tabs
 
 # We read in data from Excel using READXL package
-# From "readxl" package we use the read_excel function to read in data from Excel file
+# From {readxl} package we use the read_excel function to read in data from Excel file
 
 # Parameters
 # sheet = number [Number of sheet to be imported]
