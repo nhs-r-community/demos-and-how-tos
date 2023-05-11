@@ -1,16 +1,28 @@
+<<<<<<< HEAD:ggplot/camcoder/09 Attendances by year geom_smooth.R
 #09 AE Attendances_by_year_geom_smooth
+=======
+# 09 AE Attendances_by_year_geom_smooth
+>>>>>>> Pablo-source-main:ggplot2-visualizations/09 Attendances by year geom_smooth.R
 
 library(tidyverse)
 
 # Load England AE Attendances
+<<<<<<< HEAD:ggplot/camcoder/09 Attendances by year geom_smooth.R
 AE_data_Type1_ATT <- read_excel(here("data","AE_England_data.xls"),
+=======
+AE_data_Type1_ATT <- read_excel(here::here("data","AE_England_data.xls"),
+>>>>>>> Pablo-source-main:ggplot2-visualizations/09 Attendances by year geom_smooth.R
                                 sheet = 1,skip =17, range = "C18:D123",na = "")
 AE_data_Type1_ATT
 
 # 3. Subset original imported AE_data set to Keep A&E Attendances
 # From file  AE_England_data.xls
 AE_data_subset<- read_excel(
+<<<<<<< HEAD:ggplot/camcoder/09 Attendances by year geom_smooth.R
   here("data", "AE_England_data.xls"), 
+=======
+  here::here("data", "AE_England_data.xls"), 
+>>>>>>> Pablo-source-main:ggplot2-visualizations/09 Attendances by year geom_smooth.R
   sheet = 1, skip =17) %>% 
   clean_names() %>% 
   select(

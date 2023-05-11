@@ -30,7 +30,11 @@ RTT_TS_data <- function() {
   
   download.file(
     url = 'https://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2023/01/RTT-Overview-Timeseries-Including-Estimates-for-Missing-Trusts-Nov22-XLS-98K-63230.xlsx',
+<<<<<<< HEAD:ggplot/camcoder/02 Download RTT TS data.R
     destfile = here("data",xlsFile),
+=======
+    destfile = here::here("data",xlsFile),
+>>>>>>> Pablo-source-main:ggplot2-visualizations/02 Download RTT TS data.R
     mode ="wb"
   )
 
