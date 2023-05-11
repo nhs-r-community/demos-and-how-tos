@@ -14,7 +14,6 @@ where_am_i <- here::here()
 excel_file <- list.files (paste0(where_am_i,"/ggplot2-visualizations/data"),pattern = "xlsx$")
 excel_file
 
-
 # [1] "RTT_TS_data.xlsx"
 excel_tabs <- excel_sheets(paste0(where_am_i,"/ggplot2-visualizations/data/RTT_TS_data.xlsx"))
 excel_tabs
@@ -39,7 +38,7 @@ excel_tabs
 
 ### Importing our main RTT data
 
-# THere are 9 Rows of data in the Excel file we downloaded from the URL
+# There are 9 Rows of data in the Excel file we downloaded from the URL
 # File name "RTT_TS_data.xlsx"
 # skip = 9
 
@@ -92,7 +91,6 @@ Variable_names
 
 # 4. As we can see we have plenty of variables, we will start by subsetting them and keeping just TWO
 # x2 that will correspond to "Date" and "Total waiting(Mil)" That corresponds to Total figure of incomplete pathways or waiting list
-
 RTT_data_sub <- RTT_Data %>% 
   select(x2,total_waiting_mil)
 RTT_data_sub    
