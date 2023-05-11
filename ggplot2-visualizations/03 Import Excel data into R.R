@@ -9,7 +9,6 @@ library(janitor)
 
 
 # Added "where_am_i" across all instances an absolute path is required 
-
 where_am_i <- here::here()
 
 excel_file <- list.files (paste0(where_am_i,"/ggplot2-visualizations/data"),pattern = "xlsx$")
