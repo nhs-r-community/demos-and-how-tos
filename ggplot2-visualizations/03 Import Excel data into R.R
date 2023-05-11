@@ -18,7 +18,7 @@ excel_file
 excel_tabs <- excel_sheets(paste0(where_am_i,"/ggplot2-visualizations/data/RTT_TS_data.xlsx"))
 excel_tabs
 
-# We read in data from Excel using READXL package
+# We read in data from Excel using {readxl} package
 # From {readxl} package we use the read_excel function to read in data from Excel file
 
 # Parameters
@@ -42,7 +42,7 @@ excel_tabs
 # File name "RTT_TS_data.xlsx"
 # skip = 9
 
-# Let's try to import it just by specifying the number of rows to ommit
+# Let's try to import it just by specifying the number of rows to omit
 
 
 
@@ -76,7 +76,7 @@ RTT_Data <- read_excel(paste0(where_am_i,"/ggplot2-visualizations/data/RTT_TS_da
 
 RTT_Data
 
-# 3. Use Janitor package to get clear names using "clear_names()"function
+# 3. Use {Janitor} package to get clear names using "clear_names()"function
 # This file worked fine and solves:
 # a. Importing null values from original file defined as "-"
 # b. Cleaning original variable names using clean_names() function from Janitor package
@@ -100,7 +100,7 @@ RTT_data <- RTT_data_sub %>% select(Date = x2, Total_waiting = total_waiting_mil
 RTT_data
 
 # We can also remote null values using drop_na() function rom tidyr package
-# From DPLYR we can use na.omit() function
+# From {dplyr} package we can use na.omit() function
 RTT_data <- RTT_data_sub %>% 
   select(Date = x2, Total_waiting_M = total_waiting_mil) %>% 
   na.omit()
