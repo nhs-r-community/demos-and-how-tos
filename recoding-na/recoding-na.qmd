@@ -1,0 +1,64 @@
+---
+title: "Recoding NA"
+format: html
+embed-resources: true
+---
+
+## Create data
+
+```{r}
+#| echo: false
+#| include: false
+library(tidyverse)
+```
+
+This was written originally in an Excel spreadsheet and used {datapasta} to copy into R as code to build the same data frame.
+
+
+## Recoding to NA
+
+```{r}
+survey <- tibble::tribble(
+  ~Survey.Response, ~Code,
+       "Response1",   -9L,
+       "Response2",    2L,
+       "Response3",   10L,
+       "Response4",    0L,
+       "Response5",    5L,
+       "Response6",   -9L,
+        "Missing", NA
+  )
+
+```
+
+## Recode to NA
+
+```{r}
+survey |> 
+  mutate(new_column = na_if(Code, -9))
+```
+
+It's also possible to use the numbers and `case_when()`:
+
+```{r}
+survey |> 
+  mutate(new_column = case_when(Code < 0 ~ NA,
+                                .default = Code))
+
+```
+
+Or `ifelse()` where there are only two options:
+
+```{r}
+survey |> 
+  mutate(new_column = ifelse(Code < 0, NA, Code))
+```
+
+
+## Recode from NA
+
+```{r}
+survey |> 
+  mutate(new_column2 = replace_na(Code, 1000))
+```
+
