@@ -40,3 +40,16 @@ data |>
 
 
 [https://tidyr.tidyverse.org/reference/separate.html](https://tidyr.tidyverse.org/reference/separate.html)
+
+## Add a pivot
+
+To move wide data to longer:
+
+```{r}
+data |> 
+  tidyr::separate(Codes, c("col1", "col2", "col3")) |> 
+  tidyr::pivot_longer(cols = c(starts_with("col")),
+               names_to = "type")
+```
+
+
