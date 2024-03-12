@@ -1,0 +1,42 @@
+---
+title: "Separating codes"
+format: html
+embed-resources: true
+---
+
+## Create data
+
+```{r}
+#| echo: false
+#| include: false
+library(tidyverse)
+```
+
+
+This was written originally in an Excel spreadsheet and used {datapasta} to copy into R as code to build the same data frame.
+
+```{r}
+data <- tibble::tribble(
+    ~Patient,          ~Codes,
+  "PatientA", "A01, A02, A03",
+  "PatientB", "B01; B02; B03",
+  "PatientC", "C01; C03",
+  "PatientD", "D01. D02. D03"
+  )
+
+```
+
+
+## Separate codes by position
+
+Separate into columns in the order data appears
+
+```{r}
+library(tidyverse)
+
+data |> 
+  tidyr::separate(Codes, c("col1", "col2", "col3"))
+```
+
+
+[https://tidyr.tidyverse.org/reference/separate.html](https://tidyr.tidyverse.org/reference/separate.html)
